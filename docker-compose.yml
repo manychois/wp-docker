@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: always
+    volumes:
+      - ./db-data:/var/lib/mysql
+  web:
+    build:
+      context: .
+      dockerfile: web.dockerfile
+    depends_on:
+      - db
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    extra_hosts:
+      - local-wp.test:127.0.0.1
+      - www.local-wp.test:127.0.0.1
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./html:/var/www/html

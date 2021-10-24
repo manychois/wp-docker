@@ -1,0 +1,1 @@
+put `local-wp.cert.pem` and `local-wp.key.pem` in this folder.
