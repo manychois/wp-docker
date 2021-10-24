@@ -19,6 +19,11 @@ services:
     dns:
       - 1.1.1.1
       - 1.0.0.1
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     extra_hosts:
       - local-wp.test:127.0.0.1
       - www.local-wp.test:127.0.0.1
@@ -28,3 +33,15 @@ services:
     restart: always
     volumes:
       - ./html:/var/www/html
+
+  phpmyadmin:
+    image: phpmyadmin
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
