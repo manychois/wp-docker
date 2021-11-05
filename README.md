@@ -8,3 +8,4 @@
 6. The site is accessible via https://www.local-wp.test/, with `admin` being the login user and password.
 7. phpmyadmin is accessible via http://locahost:8080.
 8. Run `make down` to stop and remove the docker containers.
+9. Database is persisted in folder `db-data/`.
