@@ -24,6 +24,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      UPLOAD_LIMIT: ${UPLOAD_LIMIT}
     extra_hosts:
       - local-wp.test:127.0.0.1
       - www.local-wp.test:127.0.0.1
