@@ -8,6 +8,7 @@ RUN apt update && \
     a2ensite default-ssl && \
     a2enmod rewrite ssl && \
     cp $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini && \
+    sed -i 's/max_execution_time = 30/max_execution_time = 120/' $PHP_INI_DIR/php.ini && \
     pecl install imagick && \
     docker-php-ext-enable imagick && \
     docker-php-ext-install exif gd mysqli zip
