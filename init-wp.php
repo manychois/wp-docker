@@ -58,11 +58,11 @@ wp('core install', [
     'skip-email' => '',
 ]);
 wp('plugin delete akismet hello');
-wp('theme delete twentynineteen twentytwenty');
+wp('theme delete twentytwenty twentytwentyone');
 
 // enable WordPress debug mode
 $configContent = file_get_contents('wp-config.php');
-$pos = strpos($configContent, '/* That\'s all, stop editing! Happy publishing. */');
+$search = 'define( \'WP_DEBUG\', false );';
 $debug = <<<PHP
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
@@ -70,7 +70,7 @@ define('WP_DEBUG_DISPLAY', false);
 @ini_set('display_errors', 0);
 define('SCRIPT_DEBUG', true);
 PHP;
-$configContent = substr($configContent, 0, $pos) . $debug . "\n" . substr($configContent, $pos);
+$configContent = str_replace($search, $debug, $configContent);
 file_put_contents('wp-config.php', $configContent);
 
 shell_exec('chown ' . getenv('APACHE_RUN_USER') . ' /var/www/html -R');

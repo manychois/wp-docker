@@ -9,9 +9,11 @@ RUN apt update && \
     a2enmod rewrite ssl && \
     cp $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini && \
     sed -i 's/max_execution_time = 30/max_execution_time = 120/' $PHP_INI_DIR/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' $PHP_INI_DIR/php.ini && \
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' $PHP_INI_DIR/php.ini && \
     pecl install imagick && \
     docker-php-ext-enable imagick && \
-    docker-php-ext-install exif gd mysqli zip
+    docker-php-ext-install exif gd intl mysqli zip
 
 # install wp-cli
 RUN apt install -y --no-install-recommends mariadb-client && \
