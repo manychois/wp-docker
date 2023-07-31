@@ -1,4 +1,4 @@
 db-data/
-html/
+.env
 ssl-certificates/local-wp.cert.pem
 ssl-certificates/local-wp.key.pem
