@@ -1,14 +1,8 @@
 build:
 	bash build-docker.sh
-
 up:
 	docker-compose up -d
-
 down:
 	docker-compose down
-
-bash:
-	docker-compose exec -u root web bash
-
-init:
-	docker-compose exec -u root web php /usr/local/init-wp.php
+init-wp:
+	docker-compose exec dev /bin/bash /home/dev/scripts/init-wp.sh

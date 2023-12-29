@@ -1,47 +1,57 @@
-version: '3.9'
 services:
-  db:
-    image: mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    restart: always
-    volumes:
-      - ./db-data:/var/lib/mysql
-  web:
-    build:
-      context: .
-      dockerfile: web.dockerfile
-    depends_on:
-      - db
-    dns:
-      - 1.1.1.1
-      - 1.0.0.1
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    extra_hosts:
-      - local-wp.test:127.0.0.1
-      - www.local-wp.test:127.0.0.1
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    volumes:
-      - ./html:/var/www/html
+    db:
+        build:
+            context: ./docker
+            dockerfile: db.dockerfile
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        volumes:
+            - ./db-data:/var/lib/mysql
 
-  phpmyadmin:
-    image: phpmyadmin
-    depends_on:
-      - db
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    httpd:
+        build:
+            context: ./docker
+            dockerfile: httpd.dockerfile
+        depends_on:
+            - db
+        ports:
+            - 80:80
+            - 443:443
+        restart: always
+        extra_hosts:
+            - ${WP_DOMAIN}:127.0.0.1
+        volumes:
+            - ./docker/php.ini:/usr/local/etc/php.ini:ro
+            - ./html:/var/www/html
+
+    dev:
+        build:
+            context: ./docker
+            dockerfile: dev.dockerfile
+        depends_on:
+            - db
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            WP_DOMAIN: ${WP_DOMAIN}
+            WP_TITLE: ${WP_TITLE}
+            WP_ADMIN_USER: ${WP_ADMIN_USER}
+            WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+            WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+        volumes:
+            - ./docker/php.ini:/usr/local/etc/php.ini
+            - ./docker/dev-scripts:/home/dev/scripts
+            - ./html:/var/www/html
+
+    adminer:
+        image: adminer:latest
+        depends_on:
+            - db
+        restart: always
+        ports:
+            - 8080:8080
